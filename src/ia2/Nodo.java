@@ -5,7 +5,8 @@
  */
 package ia2;
 
-import java.util.ArrayList;
+
+import java.util.LinkedList;
 
 /**
  *
@@ -19,8 +20,8 @@ public class Nodo {
     public int valorHeuristica;
     public Nodo padre;
     public int profundidad;
-    public ArrayList<Nodo> hijos;
-    
+    public LinkedList<Nodo> hijos = new LinkedList<Nodo>();
+    public int jugador;
     
     /*
     Constructor para un nodo sin padre (nodo inicial)
@@ -35,7 +36,7 @@ public class Nodo {
        this.valorHeuristica = valorHeuristica;
        this.padre = null;
        this.profundidad = 0;
-        
+       this.jugador = EnumJugador.MAX; 
     }
     
     /*
@@ -43,14 +44,15 @@ public class Nodo {
     */
     public  Nodo(Nodo padre, int[][] nuevoEstado, Tuple posicionMin, Tuple posicionMax, int valorHeuristica){
        this.funciones=new FuncionesGenerales();
-       this.estadoActual = new int[estadoActual.length][estadoActual.length];
+       this.estadoActual = new int[nuevoEstado.length][nuevoEstado.length];
        funciones.duplicarArrayValor(nuevoEstado, this.estadoActual);
        this.posicionMin = new Tuple(posicionMin);
        this.posicionMax = new Tuple(posicionMax);
        this.valorHeuristica = valorHeuristica;
        this.padre = padre;
        this.profundidad = padre.profundidad + 1;
-        
+       this.jugador = (padre.jugador == EnumJugador.MAX) ? EnumJugador.MIN: EnumJugador.MAX;
     }
+    
     
 }

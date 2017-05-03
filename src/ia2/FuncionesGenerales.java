@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.*;
 
 /**
  *
@@ -18,30 +19,62 @@ import java.util.Scanner;
  */
 public class FuncionesGenerales {
 
-    public void printMatrix(int[][] m){
-    try{
-        int rows = m.length;
-        int columns = m[0].length;
-        String str = "|\t";
-
-        for(int i=0;i<rows;i++){
-            for(int j=0;j<columns;j++){
-                str += m[i][j] + "\t";
-            }
-
-            System.out.println(str + "|");
-            str = "|\t";
-        }
-
-    }catch(Exception e){System.out.println("Matrix is empty!!");}
-}
-    
-    public void printArrayListTuples(ArrayList <Tuple> tuplas){
-        for(Tuple tupla : tuplas){
-            System.out.println("("+String.valueOf(tupla.x)+"," +String.valueOf(tupla.y)+")" );
+    public void printEstadoNodos(LinkedList<Nodo> nodos) {
+        for (Nodo nodo : nodos) {
+            printMatrix(nodo.estadoActual);
+            System.out.println("----------- Profundidad: " + nodo.profundidad);
         }
     }
-    
+
+    public void printEstadoNodosRecursivo(Nodo nodo) {
+        if(nodo.hijos.size() == 0){
+            return;
+        }
+        for (Nodo nodoTmp : nodo.hijos) {
+            printMatrix(nodoTmp.estadoActual);
+            System.out.println("----------- Profundidad: " + nodoTmp.profundidad);
+        }
+        for (Nodo nodoTmp : nodo.hijos) {
+            printEstadoNodosRecursivo(nodoTmp);
+        }
+        
+    }
+
+    /*
+    Se explica solo
+     */
+    public void printMatrix(int[][] m) {
+        try {
+            int rows = m.length;
+            int columns = m[0].length;
+            String str = "|\t";
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    str += m[i][j] + "\t";
+                }
+
+                System.out.println(str + "|");
+                str = "|\t";
+            }
+
+        } catch (Exception e) {
+            System.out.println("Matrix is empty!!");
+        }
+    }
+
+    /*
+    Se explica solo 
+     */
+    public void printArrayListTuples(ArrayList<Tuple> tuplas) {
+        for (Tuple tupla : tuplas) {
+            System.out.println("(" + String.valueOf(tupla.x) + "," + String.valueOf(tupla.y) + ")");
+        }
+    }
+
+    /*
+    Copia por valor los valores de un array bidimencional a otro 
+     */
     void duplicarArrayValor(int[][] arrayEntrada, int[][] arrayDestino) {
         int filas, columnas;
         filas = arrayEntrada.length;
@@ -66,16 +99,17 @@ public class FuncionesGenerales {
 
     }
 
+    /*
+    Chequea que la posicion este dentro de el mundo y ademas que este disponible
+     */
     boolean posicionValida(int[][] estado, Tuple posicion) {
 
-       if(!(posicionDentroMundo(estado, posicion)))
-       {
-           return false;
-       }
-        if(!(estado[posicion.x][posicion.y] == EnumEstadoMundo.POSICION_DISPONIBLE)){
-               return false;
-       }
-       else{
+        if (!(posicionDentroMundo(estado, posicion))) {
+            return false;
+        }
+        if (!(estado[posicion.x][posicion.y] == EnumEstadoMundo.POSICION_DISPONIBLE)) {
+            return false;
+        } else {
             return true;
         }
 
@@ -108,7 +142,7 @@ public class FuncionesGenerales {
     
      */
     public Tuple posicionCaballoArribaDerecha(Tuple posicionActual) {
-        Tuple arribaDerecha = new Tuple(posicionActual.x + 1, posicionActual.y - 3);
+        Tuple arribaDerecha = new Tuple(posicionActual.x + 1, posicionActual.y - 2);
         return arribaDerecha;
     }
 
@@ -188,16 +222,15 @@ public class FuncionesGenerales {
         Tuple izquierdaAbajo = new Tuple(posicionActual.x - 2, posicionActual.y + 1);
         return izquierdaAbajo;
     }
-    
+
     /*
     Retorna todas las posibles posiciones que puede tomar un caballo, incluso
     las invalidas
-    */
-    
+     */
     public ArrayList<Tuple> posicionesPosiblesCaballo(int[][] estado, Tuple posicionActor) {
 
         ArrayList<Tuple> posiciones = new ArrayList<>();
-        
+
         posiciones.add(posicionCaballoAbajoDerecha(posicionActor));
         posiciones.add(posicionCaballoAbajoIzquierda(posicionActor));
         posiciones.add(posicionCaballoDerechaAbajo(posicionActor));
@@ -206,18 +239,66 @@ public class FuncionesGenerales {
         posiciones.add(posicionCaballoIzquierdaArriba(posicionActor));
         posiciones.add(posicionCaballoArribaDerecha(posicionActor));
         posiciones.add(posicionCaballoArribaIzquierda(posicionActor));
-        
-        return posiciones ;
+
+        return posiciones;
     }
+
     /*
     Retorna las posibles posiciones validas de un caballo
-    */
+     */
     public ArrayList<Tuple> posicionesPosiblesValidasCaballo(int[][] estado, Tuple posicionActor) {
         return posicionesValidas(estado, posicionesPosiblesCaballo(estado, posicionActor));
     }
-    
-        public int cantidadPosicionesPosiblesValidasCaballo(int[][] estado, Tuple posicionActor) {
+
+    /*
+    Retorna el numero de posiciones a las que se podria mover el caballo
+    dentro de el mundo, chequeando que este dentro de el mundo y que posiciones
+    estan disponibles aun.
+     */
+    public int cantidadPosicionesPosiblesValidasCaballo(int[][] estado, Tuple posicionActor) {
         return posicionesValidas(estado, posicionesPosiblesCaballo(estado, posicionActor)).size();
+    }
+
+    /*
+    Retorna un array bidimencional con las posiciones posibles de un caballo marcadas
+    como 5, solo se modifican las posiciones disponibles, el resto del array 
+    queda igual
+     */
+    public int[][] estadoMarcadoPosibilidades(int[][] mundo, Tuple posicionActualActor) {
+
+        int[][] estadoMarcadoPosibilidades = new int[mundo.length][mundo.length];
+        duplicarArrayValor(mundo, estadoMarcadoPosibilidades);
+        ArrayList<Tuple> posicionesDisponiblesCablallo = posicionesPosiblesValidasCaballo(mundo, posicionActualActor);
+
+        for (Tuple posicion : posicionesDisponiblesCablallo) {
+            estadoMarcadoPosibilidades[posicion.x][posicion.y] = EnumEstadoMundo.MOVIMIENTO_POSIBLE;
+        }
+        return estadoMarcadoPosibilidades;
+    }
+
+    /*
+    Recibe un deque de nodos y un nodo y lo inserta de manera ordenada en el
+    de tal forma que para todo deque[i] > deque[i+1] /0  <  i < n donde n es el 
+    tamaño del deque y retorna en que posicion se inserto
+    
+    Este algoritmo asume que el deque esta ordenado de manera decendente
+     */
+    public int insersionOrdenadaArrayTuplasPorHeuristica(LinkedList<Nodo> nodos, Nodo nuevoNodo) {
+        int i = 0;
+        if (nodos.size() == 0) {
+            nodos.add(nuevoNodo);
+            return 0;
+        } else {
+            for (Nodo nodoDeque : nodos) {
+                if (nodoDeque.valorHeuristica >= nuevoNodo.valorHeuristica) {
+                }
+                nodos.add(i, nuevoNodo);
+                return i;
+            }
+            i++;
+        }
+        //esto no deberia pasar
+        return -1;
     }
 
 }

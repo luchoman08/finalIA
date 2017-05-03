@@ -12,6 +12,7 @@ package ia2;
 public class EnumEstadoMundo {
      
     public static final int OCUPADO_MIN = 1;
+     public static final int MOVIMIENTO_POSIBLE = 5;
  public static final int OCUPADO_MAX = 2;
  public static final int  POSICION_BLOQUEADA=3;
  public static final int  POSICION_INVALIDA= -1;
