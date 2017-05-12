@@ -29,7 +29,44 @@ public class MinMax {
         this.nodoInicial.valorHeuristica = heuristica1(this.nodoInicial);
         this.nivelMaximoProfundidad = profundidadMaxima;
     }
-
+    
+    /**
+     * Funcion que dice si el nodo actual ya ha sido recorrido hacia arriba
+     * por minmax
+     * @param nodo el nodo a preguntar
+     * @return si el nodo ha sido recorrido o no basado en su mejorMovimientoHijo
+     */
+    
+    public boolean nodoSubido(Nodo nodo){
+        if(nodo.mejorMovimientoHijo.x == -1000 && nodo.mejorMovimientoHijo.y == -1000){
+            return false;
+        }
+        return true;
+    }
+    
+    public void subirRecursivo(Nodo nodo){
+        if(nodoSubido(nodo.padre)){
+            return;
+        }
+        else{
+            nodo.padre.mejorMovimientoHijo = nodo.padre.hijos.getFirst().posicionMax;
+            nodo.padre.valorHeuristica = nodo.padre.hijos.getFirst().valorHeuristica;
+        }
+    }
+    
+    public void bajarRecursivo(Nodo nodo){
+        
+        if(nodo.hijos.size() == 0){
+            subirRecursivo(nodo);
+        }
+        else{
+            for(Nodo nodoTmp:nodo.hijos){
+                bajarRecursivo(nodoTmp);
+            }
+        }
+        
+    }
+    
     public void expandirRecursivo(Nodo nodo) {
 
         if (esMeta(nodo)) {

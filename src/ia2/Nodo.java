@@ -17,6 +17,7 @@ public class Nodo {
     public int [][] estadoActual;
     public Tuple posicionMin;
     public Tuple posicionMax;
+    public Tuple mejorMovimientoHijo;
     public int valorHeuristica;
     public Nodo padre;
     public int profundidad;
@@ -37,6 +38,7 @@ public class Nodo {
        this.padre = null;
        this.profundidad = 0;
        this.jugador = EnumJugador.MAX; 
+       this.mejorMovimientoHijo = new Tuple(-1000, -1000);
     }
     
     /*
@@ -52,6 +54,7 @@ public class Nodo {
        this.padre = padre;
        this.profundidad = padre.profundidad + 1;
        this.jugador = (padre.jugador == EnumJugador.MAX) ? EnumJugador.MIN: EnumJugador.MAX;
+       this.mejorMovimientoHijo = new Tuple(-1000, -1000);
     }
     
     
