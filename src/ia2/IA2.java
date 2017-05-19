@@ -26,8 +26,8 @@ public class IA2 {
         Tuple moverA = new Tuple(2,1);
         int[][] mundo = 
         {
-        {2,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
+        {2,3,3,3,0,0,0,0},
+        {0,0,3,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
@@ -50,9 +50,10 @@ public class IA2 {
         funciones.printMatrix(minMax.suponerMoverMax(movimiento1, funciones.posicionCaballoAbajoDerecha(moverA)).estadoActual);
         */
         
-        minMax.expandirRecursivo(nodo);
-        
-     //   funciones.printEstadoNodosRecursivo(nodo);
+        minMax.expandir();
+        minMax.subir();
+        System.out.println("("+ nodo.mejorMovimientoHijo.x +","+ nodo.mejorMovimientoHijo.y +")");
+        funciones.printEstadoNodos(minMax.nodos);
     }
     
 }

@@ -20,6 +20,7 @@ import jdk.nashorn.internal.objects.NativeArray;
 public class MinMax {
 
     public Nodo nodoInicial;
+    public ArrayList<Nodo> nodos;
     public int nivelMaximoProfundidad;
     public FuncionesGenerales funciones;
 
@@ -28,47 +29,48 @@ public class MinMax {
         this.nodoInicial = new Nodo(estado, posicionMin, posicionMax, 1000);
         this.nodoInicial.valorHeuristica = heuristica1(this.nodoInicial);
         this.nivelMaximoProfundidad = profundidadMaxima;
+        this.nodos = new ArrayList<>();
+        this.nodos.add(nodoInicial);
     }
-    
+
     /**
-     * Funcion que dice si el nodo actual ya ha sido recorrido hacia arriba
-     * por minmax
+     * Funcion que dice si el nodo actual ya ha sido recorrido hacia arriba por
+     * minmax
+     *
      * @param nodo el nodo a preguntar
-     * @return si el nodo ha sido recorrido o no basado en su mejorMovimientoHijo
+     * @return si el nodo ha sido recorrido o no basado en su
+     * mejorMovimientoHijo
      */
-    
-    public boolean nodoSubido(Nodo nodo){
-        if(nodo.mejorMovimientoHijo.x == -1000 && nodo.mejorMovimientoHijo.y == -1000){
+    public boolean nodoSubido(Nodo nodo) {
+        if (nodo.mejorMovimientoHijo.x == -1000 && nodo.mejorMovimientoHijo.y == -1000) {
             return false;
         }
         return true;
     }
-    
-    public void subirRecursivo(Nodo nodo){
-        if(nodoSubido(nodo.padre)){
-            return;
-        }
-        else{
-            nodo.padre.mejorMovimientoHijo = nodo.padre.hijos.getFirst().posicionMax;
-            nodo.padre.valorHeuristica = nodo.padre.hijos.getFirst().valorHeuristica;
-        }
-    }
-    
-    public void bajarRecursivo(Nodo nodo){
-        
-        if(nodo.hijos.size() == 0){
-            subirRecursivo(nodo);
-        }
-        else{
-            for(Nodo nodoTmp:nodo.hijos){
-                bajarRecursivo(nodoTmp);
-            }
-        }
-        
-    }
-    
-    public void expandirRecursivo(Nodo nodo) {
 
+    public void subir() {
+        for (int i = nodos.size() -1; i >= 1; i--) {
+            Nodo nodo = nodos.get(i);
+            if (nodo.padre.jugador == EnumJugador.MAX) {
+                if (nodo.padre.valorHeuristica <= nodo.valorHeuristica) {
+                    nodo.padre.valorHeuristica = nodo.valorHeuristica;
+                    nodo.padre.mejorMovimientoHijo.x = nodo.posicionMax.x;
+                    nodo.padre.mejorMovimientoHijo.y = nodo.posicionMax.y;
+                }
+            }
+            if (nodo.padre.jugador == EnumJugador.MIN) {
+                if (nodo.padre.valorHeuristica >= nodo.valorHeuristica) {
+                    nodo.padre.valorHeuristica = nodo.valorHeuristica;
+                    nodo.padre.mejorMovimientoHijo.x = nodo.posicionMax.x;
+                    nodo.padre.mejorMovimientoHijo.y = nodo.posicionMax.y;
+                }
+            }
+
+        }
+    }
+
+    public void expandir() {
+        /*
         if (esMeta(nodo)) {
             return ;
         }
@@ -76,34 +78,39 @@ public class MinMax {
         if(nodo.profundidad > (this.nivelMaximoProfundidad - 1)){
             return;
         }
-        
-        ArrayList<Tuple> posicionesDisponiblesJugador = new ArrayList<>();
-        Nodo nodoTmp;
+         */
 
-        if (nodo.jugador == EnumJugador.MAX) {
-            posicionesDisponiblesJugador = funciones.posicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax);
-            for (Tuple posicionDisponible : posicionesDisponiblesJugador) {
-                nodoTmp = suponerMoverMax(nodo, posicionDisponible);
-                nodoTmp.profundidad = nodo.profundidad + 1;
-                nodoTmp.valorHeuristica = heuristica1(nodoTmp);
-                nodoTmp.padre = nodo;
-                nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN: EnumJugador.MAX;
-                funciones.insersionOrdenadaArrayTuplasPorHeuristica(nodo.hijos, nodoTmp);
+        for (int i = 0; i < nodos.size(); i++) {
+            Nodo nodo = nodos.get(i);
+
+            if (!(esMeta(nodo) || nodo.profundidad > (this.nivelMaximoProfundidad - 1))) {
+
+                ArrayList<Tuple> posicionesDisponiblesJugador = new ArrayList<>();
+                Nodo nodoTmp;
+
+                if (nodo.jugador == EnumJugador.MAX) {
+                    posicionesDisponiblesJugador = funciones.posicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax);
+                    for (Tuple posicionDisponible : posicionesDisponiblesJugador) {
+                        nodoTmp = suponerMoverMax(nodo, posicionDisponible);
+                        nodoTmp.profundidad = nodo.profundidad + 1;
+                        nodoTmp.valorHeuristica = heuristica1(nodoTmp);
+                        nodoTmp.padre = nodo;
+                        nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN : EnumJugador.MAX;
+                        this.nodos.add(nodoTmp);
+                    }
+                }
+                if (nodo.jugador == EnumJugador.MIN) {
+                    posicionesDisponiblesJugador = funciones.posicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin);
+                    for (Tuple posicionDisponible : posicionesDisponiblesJugador) {
+                        nodoTmp = suponerMoverMin(nodo, posicionDisponible);
+                        nodoTmp.profundidad = nodo.profundidad + 1;
+                        nodoTmp.valorHeuristica = heuristica1(nodoTmp);
+                        nodoTmp.padre = nodo;
+                        nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN : EnumJugador.MAX;
+                        this.nodos.add(nodoTmp);
+                    }
+                }
             }
-        }
-        if (nodo.jugador == EnumJugador.MIN) {
-            posicionesDisponiblesJugador = funciones.posicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin);
-            for (Tuple posicionDisponible : posicionesDisponiblesJugador) {
-                nodoTmp = suponerMoverMin(nodo, posicionDisponible);
-                nodoTmp.profundidad = nodo.profundidad + 1;
-                nodoTmp.valorHeuristica = heuristica1(nodoTmp);
-                nodoTmp.padre = nodo;
-                nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN: EnumJugador.MAX;
-                funciones.insersionOrdenadaArrayTuplasPorHeuristica(nodo.hijos, nodoTmp);
-            }
-        }
-        for(Nodo hijo: nodo.hijos){
-            expandirRecursivo(hijo);
         }
     }
 
@@ -165,7 +172,7 @@ public class MinMax {
      */
     public Nodo suponerMoverMax(Nodo nodo, Tuple posicionNueva) {
 
-        Nodo nuevoNodo = new Nodo( nodo.estadoActual, nodo.posicionMin, nodo.posicionMax, nodo.valorHeuristica);
+        Nodo nuevoNodo = new Nodo(nodo.estadoActual, nodo.posicionMin, nodo.posicionMax, nodo.valorHeuristica);
 
         if (funciones.posicionValida(nodo.estadoActual, posicionNueva)) {
             nuevoNodo.estadoActual[nodo.posicionMax.x][nodo.posicionMax.y] = EnumEstadoMundo.POSICION_BLOQUEADA;

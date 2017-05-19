@@ -21,24 +21,24 @@ public class Nodo {
     public int valorHeuristica;
     public Nodo padre;
     public int profundidad;
-    public LinkedList<Nodo> hijos = new LinkedList<Nodo>();
     public int jugador;
     
     /*
     Constructor para un nodo sin padre (nodo inicial)
     */
     
-    public  Nodo(int[][] estadoActual, Tuple posicionMin, Tuple posicionMax, int valorHeuristica){
+    public  Nodo(int[][] estadoActual, Tuple posicionMin, Tuple posicionMax, int valorHeuristica ){
        this.funciones=new FuncionesGenerales();
        this.estadoActual = new int[estadoActual.length][estadoActual.length];
        funciones.duplicarArrayValor(estadoActual, this.estadoActual);
        this.posicionMin = new Tuple(posicionMin);
        this.posicionMax = new Tuple(posicionMax);
-       this.valorHeuristica = valorHeuristica;
+       this.valorHeuristica = -100000;
        this.padre = null;
        this.profundidad = 0;
        this.jugador = EnumJugador.MAX; 
        this.mejorMovimientoHijo = new Tuple(-1000, -1000);
+       
     }
     
     /*

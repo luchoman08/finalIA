@@ -19,26 +19,14 @@ import java.util.*;
  */
 public class FuncionesGenerales {
 
-    public void printEstadoNodos(LinkedList<Nodo> nodos) {
+    public void printEstadoNodos(ArrayList<Nodo> nodos) {
         for (Nodo nodo : nodos) {
             printMatrix(nodo.estadoActual);
             System.out.println("----------- Profundidad: " + nodo.profundidad);
         }
     }
 
-    public void printEstadoNodosRecursivo(Nodo nodo) {
-        if(nodo.hijos.size() == 0){
-            return;
-        }
-        for (Nodo nodoTmp : nodo.hijos) {
-            printMatrix(nodoTmp.estadoActual);
-            System.out.println("----------- Profundidad: " + nodoTmp.profundidad);
-        }
-        for (Nodo nodoTmp : nodo.hijos) {
-            printEstadoNodosRecursivo(nodoTmp);
-        }
-        
-    }
+
 
     /*
     Se explica solo
