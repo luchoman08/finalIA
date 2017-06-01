@@ -6,11 +6,15 @@
 package ia2;
 
 import java.awt.Button;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,29 +23,37 @@ import javax.swing.JButton;
  *
  * @author dintev
  */
-public class Intefaz extends javax.swing.JFrame implements ActionListener{
+public class Intefaz extends javax.swing.JFrame implements ActionListener {
 
     private JButton[][] botones;
     ImageIcon caballoBlanco;
+    ImageIcon posicionBloqueada;
     ImageIcon caballoNegro;
+    Mundo mundo;
+    MinMax minmax;
+    int profundidad;
 
     /**
      * Creates new form Intefaz
      */
     public Intefaz() {
+        this.profundidad = 5;
         initComponents();
+        this.mundo = new Mundo(profundidad);
+        this.mundo.setPosicionMaquina(new Tuple(0, 0));
         this.setLayout(null);
-
-        initSize(6);
         
+        initSize(profundidad);
+
 
         /*
         Inicializacion de imagenes
         
          */
+        this.posicionBloqueada = new ImageIcon(this.getClass().getResource("posicionBloqueada.png"));
         this.caballoBlanco = new ImageIcon(this.getClass().getResource("caballoBlanco.png"));
         this.caballoNegro = new ImageIcon(this.getClass().getResource("caballoNegro.png"));
-        initCasillas(6);
+        initCasillas(profundidad);
     }
 
     /**
@@ -56,14 +68,52 @@ public class Intefaz extends javax.swing.JFrame implements ActionListener{
         this.setSize(80 * profundidad + 10, 80 * profundidad + 29);
 
     }
+
+    public void habilitarCasillasMovimientoHumano() {
+    ArrayList<Tuple> posicionesDisponibles = this.mundo.getFunciones().posicionesPosiblesValidasCaballo(this.mundo.getEstado(),this.mundo.getHumano().posicion);
+    for(Tuple posicionDisponible:posicionesDisponibles ){
+        this.botones[posicionDisponible.x][posicionDisponible.y].setEnabled(true);
+    }
+    }
+
+    public void remakeWorld(int profundidad) {
+        FuncionesGenerales f = new FuncionesGenerales();
+        System.err.println(profundidad);
+        for (int i = 0; i < profundidad; i++) {
+            for (int j = 0; j < profundidad; j++) {
+                this.botones[i][j].setEnabled(false);
+                switch (this.mundo.getEstado()[i][j]) {
+                    case EnumEstadoMundo.OCUPADO_MIN:
+                        botones[i][j].setIcon(caballoNegro);
+                        break;
+                    case EnumEstadoMundo.OCUPADO_MAX:
+                        botones[i][j].setIcon(caballoBlanco);
+                        break;
+                    case EnumEstadoMundo.POSICION_BLOQUEADA:
+                        botones[i][j].setIcon(posicionBloqueada);
+                        break;
+                }
+            }
+        }
+
+    }
+
     @Override
-  public void actionPerformed(ActionEvent e) {
-      System.err.println("kha");
-        if (e.getSource()==botones[0][0]) {
-            
-            botones[0][0].setIcon(caballoBlanco);
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource().getClass().getSimpleName().equals("JButton")) {
+            this.mundo.setPosicionHumano(new Tuple(((JButton) e.getSource()).getLocation().x / 80, ((JButton) e.getSource()).getLocation().y / 80));
+            remakeWorld(this.profundidad);
+
+            this.minmax = new MinMax(mundo.getEstado(), mundo.getMaquina().posicion, mundo.getHumano().posicion, profundidad);
+            this.minmax.expandir();
+            this.minmax.subir();
+            this.mundo.setPosicionMaquina(minmax.nodoInicial.mejorMovimientoHijo);
+            remakeWorld(this.profundidad);
+            habilitarCasillasMovimientoHumano();
         }
     }
+
     public void initCasillas(int profundidad) {
         this.botones = new JButton[profundidad][profundidad];
         for (int i = 0; i < profundidad; i++) {

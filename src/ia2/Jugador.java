@@ -13,6 +13,10 @@ public class Jugador extends Agent{
     
     public Tuple posicion;
     
+    public Jugador(){
+        this.posicion = new Tuple(-1, -1);
+    }
+    
     public void setup(){
         
     }
