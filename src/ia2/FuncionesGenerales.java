@@ -22,7 +22,7 @@ public class FuncionesGenerales {
     public void printEstadoNodos(ArrayList<Nodo> nodos) {
         for (Nodo nodo : nodos) {
             printMatrix(nodo.estadoActual);
-            System.out.println("----------- Profundidad: " + nodo.profundidad);
+            System.out.println("----------- Profundidad: " + nodo.profundidad + "Jugador:" + nodo.jugador);
         }
     }
 

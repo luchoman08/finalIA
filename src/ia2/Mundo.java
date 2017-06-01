@@ -14,7 +14,7 @@ import jade.core.Agent;
  * y cuando esto se cumpla
  */
 public class Mundo extends Agent{
-    int [][] estado ;
+    int [][] estado;
     Jugador humano;
     Jugador maquina;
     FuncionesGenerales funciones;

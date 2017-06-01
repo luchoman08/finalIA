@@ -11,8 +11,6 @@
 package ia2;
 
 import java.util.ArrayList;
-import jdk.nashorn.internal.objects.NativeArray;
-
 /**
  *
  * @author lucho
@@ -24,10 +22,9 @@ public class MinMax {
     public int nivelMaximoProfundidad;
     public FuncionesGenerales funciones;
 
-    public MinMax(int[][] estado, Tuple posicionMin, Tuple posicionMax, int profundidadMaxima) {
+    public MinMax(int[][] estado, Tuple posicionMax, Tuple posicionMin, int profundidadMaxima) {
         this.funciones = new FuncionesGenerales();
-        this.nodoInicial = new Nodo(estado, posicionMin, posicionMax, 1000);
-        this.nodoInicial.valorHeuristica = heuristica1(this.nodoInicial);
+        this.nodoInicial = new Nodo(estado, posicionMin, posicionMax, -1000);
         this.nivelMaximoProfundidad = profundidadMaxima;
         this.nodos = new ArrayList<>();
         this.nodos.add(nodoInicial);
@@ -51,11 +48,14 @@ public class MinMax {
     public void subir() {
         for (int i = nodos.size() -1; i >= 1; i--) {
             Nodo nodo = nodos.get(i);
+            if(nodo.padre==this.nodoInicial)
+               System.out.println("que honda perro >:v " + nodo.padre.valorHeuristica);
             if (nodo.padre.jugador == EnumJugador.MAX) {
                 if (nodo.padre.valorHeuristica <= nodo.valorHeuristica) {
                     nodo.padre.valorHeuristica = nodo.valorHeuristica;
                     nodo.padre.mejorMovimientoHijo.x = nodo.posicionMax.x;
                     nodo.padre.mejorMovimientoHijo.y = nodo.posicionMax.y;
+                     
                 }
             }
             if (nodo.padre.jugador == EnumJugador.MIN) {
@@ -79,11 +79,11 @@ public class MinMax {
             return;
         }
          */
-
-        for (int i = 0; i < nodos.size(); i++) {
+        int nodosSize = nodos.size();
+        for ( int i = 0 ; i < nodosSize ; ++i ) {
             Nodo nodo = nodos.get(i);
-
-            if (!(esMeta(nodo) || nodo.profundidad > (this.nivelMaximoProfundidad - 1))) {
+            
+            if (!esMeta(nodo) && !(nodo.profundidad > (this.nivelMaximoProfundidad - 1))) {
 
                 ArrayList<Tuple> posicionesDisponiblesJugador = new ArrayList<>();
                 Nodo nodoTmp;
@@ -96,6 +96,7 @@ public class MinMax {
                         nodoTmp.valorHeuristica = heuristica1(nodoTmp);
                         nodoTmp.padre = nodo;
                         nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN : EnumJugador.MAX;
+                      //  System.out.println(posicionesDisponiblesJugador.size());
                         this.nodos.add(nodoTmp);
                     }
                 }
@@ -108,9 +109,15 @@ public class MinMax {
                         nodoTmp.padre = nodo;
                         nodoTmp.jugador = (nodo.jugador == EnumJugador.MAX) ? EnumJugador.MIN : EnumJugador.MAX;
                         this.nodos.add(nodoTmp);
+                        
                     }
                 }
+               
             }
+            // System.out.println("posiciones validas: " + funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin));
+            //System.out.println("posicion min:" + nodo.posicionMin.x + " "  + nodo.posicionMin.y);
+            nodosSize = nodos.size();
+           // System.out.println(nodosSize + " " + i);
         }
     }
 

@@ -22,19 +22,19 @@ public class IA2 {
         funciones = new FuncionesGenerales();
         System.out.println("hola mundo");
         Tuple posicionMax = new Tuple(0,0);
-        Tuple posicionMin = new Tuple(7,7);
+        Tuple posicionMin = new Tuple(1,0);
         Tuple moverA = new Tuple(2,1);
         int[][] mundo = 
         {
         {2,3,3,3,0,0,0,0},
-        {0,0,3,0,0,0,0,0},
+        {1,0,3,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,1}};
-        MinMax minMax = new MinMax(mundo, posicionMax, posicionMax,8);
+        {0,0,0,0,0,0,0,0}};
+        MinMax minMax = new MinMax(mundo, posicionMax, posicionMin, 8);
         Nodo nodo = new Nodo(mundo, posicionMin, posicionMax, 85);
         funciones.printMatrix(mundo);
           System.out.println("----------- ");
@@ -52,8 +52,12 @@ public class IA2 {
         
         minMax.expandir();
         minMax.subir();
-        System.out.println("("+ nodo.mejorMovimientoHijo.x +","+ nodo.mejorMovimientoHijo.y +")");
-        funciones.printEstadoNodos(minMax.nodos);
+        
+        System.out.println("("+ minMax.nodoInicial.mejorMovimientoHijo.x +","+ minMax.nodoInicial.mejorMovimientoHijo.y +")");
+        //funciones.printEstadoNodos(minMax.nodos);
+        System.out.println(minMax.nodos.get(0).posicionMax.x);
+        Intefaz i = new Intefaz();
+        i.show();
     }
     
 }
