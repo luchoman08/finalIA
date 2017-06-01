@@ -6,14 +6,25 @@
 package ia2;
 
 import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 /**
  *
  * @author dintev
  */
-public class Intefaz extends javax.swing.JFrame {
+public class Intefaz extends javax.swing.JFrame implements ActionListener{
+
     private JButton[][] botones;
+    ImageIcon caballoBlanco;
+    ImageIcon caballoNegro;
+
     /**
      * Creates new form Intefaz
      */
@@ -21,39 +32,61 @@ public class Intefaz extends javax.swing.JFrame {
         initComponents();
         this.setLayout(null);
 
-        initSize(8);
-        initCasillas(8);
+        initSize(6);
+        
+
+        /*
+        Inicializacion de imagenes
+        
+         */
+        this.caballoBlanco = new ImageIcon(this.getClass().getResource("caballoBlanco.png"));
+        this.caballoNegro = new ImageIcon(this.getClass().getResource("caballoNegro.png"));
+        initCasillas(6);
     }
+
     /**
-     * Metodo que inicia el tamaño de la ventana dependiendo de el nivel del juego
-     * @param profundidad profundidad de minmax (4 - 6  - 8)
-     * */
-    public void  initSize(int profundidad){
-        
-        this.setSize(80 * profundidad, 80 * profundidad);
-        
+     * Metodo que inicia el tamaño de la ventana dependiendo de el nivel del
+     * juego
+     *
+     * @param profundidad profundidad de minmax (4 - 6 - 8)
+     *
+     */
+    public void initSize(int profundidad) {
+
+        this.setSize(80 * profundidad + 10, 80 * profundidad + 29);
+
     }
-    public void initCasillas(int profundidad){
+    @Override
+  public void actionPerformed(ActionEvent e) {
+      System.err.println("kha");
+        if (e.getSource()==botones[0][0]) {
+            
+            botones[0][0].setIcon(caballoBlanco);
+        }
+    }
+    public void initCasillas(int profundidad) {
         this.botones = new JButton[profundidad][profundidad];
-        for(int i = 0; i < profundidad; i++){
+        for (int i = 0; i < profundidad; i++) {
             for (int j = 0; j < profundidad; j++) {
-               javax.swing.JButton jButtonTmp = new javax.swing.JButton();
-        
-        jButtonTmp.setLayout(null);
-        jButtonTmp.setSize(75,75);
-        jButtonTmp.setMargin(null);
-        jButtonTmp.setLocation(i*80, j*80);
-        this.botones[i][j] = jButtonTmp;
-                
+                javax.swing.JButton jButtonTmp = new javax.swing.JButton();
+
+                jButtonTmp.setLayout(null);
+                jButtonTmp.setSize(80, 80);
+                jButtonTmp.setMargin(null);
+                jButtonTmp.setLocation(i * 80, j * 80);
+                jButtonTmp.addActionListener(this);
+                this.botones[i][j] = jButtonTmp;
+
             }
         }
-        for(int i = 0; i < profundidad; i++){
+        for (int i = 0; i < profundidad; i++) {
             for (int j = 0; j < profundidad; j++) {
                 this.add(botones[i][j]);
             }
-            }
-        
+        }
+
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -108,6 +141,7 @@ public class Intefaz extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Intefaz().setVisible(true);
             }
