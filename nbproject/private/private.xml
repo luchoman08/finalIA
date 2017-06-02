@@ -5,6 +5,9 @@
         <group>
             <file>file:/home/invitado/finalIA/src/ia2/IA2.java</file>
             <file>file:/home/invitado/finalIA/src/ia2/Jugador.java</file>
+            <file>file:/home/invitado/finalIA/src/ia2/MinMax.java</file>
+            <file>file:/home/invitado/finalIA/src/ia2/Intefaz.java</file>
+            <file>file:/home/invitado/finalIA/src/ia2/menuInicial.java</file>
             <file>file:/home/invitado/finalIA/src/ia2/FuncionesGenerales.java</file>
         </group>
     </open-files>

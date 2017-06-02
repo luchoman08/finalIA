@@ -192,13 +192,13 @@ public class MinMax {
     }
 
     public int heuristica1(Nodo nodo) {
-        if(funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)== 0){
+       /* if(funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)== 0){
             return 1000;
-        }
-        else{
-        return funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)
-                - funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax);
-        }
+        }*/
+        /*else{*/
+        return (funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)
+                - funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax)) * nodo.profundidad ;
+        //}
     }
 
     public Tuple hallarMejorJugada() {

@@ -37,10 +37,10 @@ public class Intefaz extends javax.swing.JFrame implements ActionListener {
      * Creates new form Intefaz
      */
     public Intefaz() {
-        this.profundidad = 5;
+        this.profundidad = 8;
         initComponents();
         this.mundo = new Mundo(profundidad);
-        this.mundo.setPosicionMaquina(new Tuple(0, 0));
+        this.mundo.setPosicionMaquina(new Tuple(0 , 0));
         this.setLayout(null);
         
         initSize(profundidad);
