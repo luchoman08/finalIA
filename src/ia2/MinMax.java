@@ -24,9 +24,13 @@ public class MinMax {
 
     public MinMax(int[][] estado, Tuple posicionMax, Tuple posicionMin, int profundidadMaxima) {
         this.funciones = new FuncionesGenerales();
-        this.nodoInicial = new Nodo(estado, posicionMin, posicionMax, -1000);
+        this.nodoInicial = new Nodo(estado, posicionMin, posicionMax, 1000);
+        this.nodoInicial.jugador = EnumJugador.MAX;
+        this.nodoInicial.valorHeuristica = 10000;
         this.nivelMaximoProfundidad = profundidadMaxima;
+        
         this.nodos = new ArrayList<>();
+        
         this.nodos.add(nodoInicial);
     }
 
@@ -51,7 +55,7 @@ public class MinMax {
             if(nodo.padre==this.nodoInicial)
                System.out.println("que honda perro >:v " + nodo.padre.valorHeuristica);
             if (nodo.padre.jugador == EnumJugador.MAX) {
-                if (nodo.padre.valorHeuristica <= nodo.valorHeuristica) {
+                if (nodo.padre.valorHeuristica >= nodo.valorHeuristica) {
                     nodo.padre.valorHeuristica = nodo.valorHeuristica;
                     nodo.padre.mejorMovimientoHijo.x = nodo.posicionMax.x;
                     nodo.padre.mejorMovimientoHijo.y = nodo.posicionMax.y;
@@ -59,7 +63,7 @@ public class MinMax {
                 }
             }
             if (nodo.padre.jugador == EnumJugador.MIN) {
-                if (nodo.padre.valorHeuristica >= nodo.valorHeuristica) {
+                if (nodo.padre.valorHeuristica <= nodo.valorHeuristica) {
                     nodo.padre.valorHeuristica = nodo.valorHeuristica;
                     nodo.padre.mejorMovimientoHijo.x = nodo.posicionMax.x;
                     nodo.padre.mejorMovimientoHijo.y = nodo.posicionMax.y;
@@ -192,9 +196,12 @@ public class MinMax {
     }
 
     public int heuristica1(Nodo nodo) {
-       /* if(funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)== 0){
-            return 1000;
-        }*/
+        if(funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)== 0){
+            return -1000000;
+        }
+         if(funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax)== 0){
+            return 1000000;
+        }
         /*else{*/
         return (funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMin)
                 - funciones.cantidadPosicionesPosiblesValidasCaballo(nodo.estadoActual, nodo.posicionMax)) * nodo.profundidad ;
